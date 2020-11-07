@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<Nullable>enable</Nullable>
+	<LangVersion>Preview</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>C:\Users\reinm\source\repos\WeaverAnnotations\__BUILD\netcoreapp3.1\Extensions\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeaverAnnotations.Attributes\WeaverAnnotations.Attributes.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\WeaverAnnotations.Core\WeaverAnnotations.Core.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\WeaverAnnotations.Util\WeaverAnnotations.Util.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>
