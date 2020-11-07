@@ -7,7 +7,7 @@ using WeaverAnnotations.Attributes.PromoteToModule;
 namespace Stuff
 {
     [Promote]
-    internal static class Module<T>
+    internal static class Module
     {
         static Module() => Console.WriteLine("Module");
 
@@ -18,8 +18,8 @@ namespace Stuff
 
     public static class Idk
     {
-        public static Int32 GetInt1() => Module<Int32>.someValue;
-        public static Int32 GetInt2() => Module<Int32>.someProp;
+        public static Int32 GetInt1() => Module.someValue;
+        public static Int32 GetInt2() => Module.someProp;
     }
 
 }
