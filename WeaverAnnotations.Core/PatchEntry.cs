@@ -144,7 +144,8 @@
             Object obj = null;
             try
             {
-                obj = Activator.CreateInstance(actualType, attribute.ConstructorArguments.Select(a => a.Value).ToArray());
+                object MapAtribArgLocal(object obj) => MapAtribArg(obj, log);
+                obj = Activator.CreateInstance(actualType, attribute.ConstructorArguments.Select(a => a.Value).Select(MapAtribArgLocal).ToArray());
             } catch(Exception e)
             {
                 log.Error(e.ToString());
@@ -188,5 +189,7 @@
                 return null;
             }
         }
+
+        private static object MapAtribArg(object obj, ILogProvider log) => obj is ClassSig sig ? sig.AssemblyQualifiedName : obj;
     }
 }
