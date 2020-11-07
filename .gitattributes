@@ -62,4 +62,4 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-*.cs linguist-language csharp
+*.cs linguist-language=csharp
