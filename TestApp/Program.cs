@@ -10,6 +10,9 @@
         {
             Console.WriteLine("Hello World!");
             Test.prop += 5;
+
+            //global::Test.StackAccess.Test.Stuff();
+            global::Test.TailCalls.Test.Run();
         }
     }
 }

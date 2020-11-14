@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<Nullable>enable</Nullable>
 	<LangVersion>Preview</LangVersion>
+	<AssemblyVersion>1.0.0.29</AssemblyVersion>
+	<FileVersion>1.0.0.29</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WeaverAnnotations.Attributes\WeaverAnnotations.Attributes.csproj" />
+    <ProjectReference Include="..\WeaverAnnotations.dnlibUtils\WeaverAnnotations.dnlibUtils.csproj" />
     <ProjectReference Include="..\WeaverAnnotations.Util\WeaverAnnotations.Util.csproj" />
   </ItemGroup>
 

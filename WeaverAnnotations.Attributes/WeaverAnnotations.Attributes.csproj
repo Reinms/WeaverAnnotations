@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	<Nullable>enable</Nullable>
 	<LangVersion>Preview</LangVersion>
+	<AssemblyVersion>1.0.0.35</AssemblyVersion>
+	<FileVersion>1.0.0.35</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

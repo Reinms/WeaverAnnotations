@@ -9,6 +9,7 @@
 
     using WeaverAnnotations.Attributes;
     using WeaverAnnotations.Core.PatcherType;
+    using WeaverAnnotations.dnlibUtils;
     using WeaverAnnotations.Util.Logging;
     using WeaverAnnotations.Util.Reflection;
     using WeaverAnnotations.Util.Xtn;
@@ -16,10 +17,9 @@
     public static class PatchEntry
     {
         private static Boolean init = false;
-        private static void Init(ILogProvider logger)
+        private static void Init(ILogProvider log)
         {
             if(init) return;
-            logger.Debug("PatchEntry init");
 
             foreach(Assembly? asm in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -31,7 +31,6 @@
                     if(!at.from.IsSubclassOf(typeof(BaseAttribute))) continue;
                     if(!at.to.IsSubclassOf(typeof(Patch<>).MakeGenericType(at.from))) continue;
                     patcherMap[at.from] = at.to;
-                    logger.Debug($"Association added: {at.from.FullName} to {at.to.FullName}");
                 }
             }
             init = true;
@@ -39,16 +38,15 @@
 
         private static readonly Dictionary<Type, Type> patcherMap = new();
 
-        public static Boolean PatchAssembly(AssemblyDef assembly, ILogProvider logger)
+        public static Boolean PatchAssembly(AssemblyDef assembly, ILogProvider log)
         {
-            Init(logger);
+            Init(log);
             BaseAttribute? ToAtribLocal(CustomAttribute? atrib)
             {
-                BaseAttribute? res = atrib.ToAtrib(logger);
-                logger.Debug($"CustomAttribute processed: {atrib.TypeFullName}, result: {res?.GetType()?.FullName ?? "null"}");
+                BaseAttribute? res = atrib.ToAtrib(log);
                 return res;
             }
-            Patch? GetPatchSetLocal(BaseAttribute? atrib) => atrib.GetPatchSet(logger);
+            Patch? GetPatchSetLocal(BaseAttribute? atrib) => atrib.GetPatchSet(log);
 
             foreach(Patch? patchSet in assembly.CustomAttributes.Select(ToAtribLocal).Where(x => x is not null).Select(GetPatchSetLocal))
             {
@@ -135,44 +133,40 @@
             }
         }
 
-        private static T? Decode<T>(this CustomAttribute attribute, Type actualType, ILogProvider log)
-            where T : Attribute
-            => typeof(T).IsAssignableFrom(actualType) ? attribute.Decode(actualType, log) as T : null;
+        //private static T? Decode<T>(this CustomAttribute attribute, Type actualType, ILogProvider log)
+        //    where T : Attribute
+        //    => typeof(T).IsAssignableFrom(actualType) ? attribute.Decode(actualType, log) as T : null;
 
-        private static Object? Decode(this CustomAttribute attribute, Type actualType, ILogProvider log)
-        {
-            Object obj = null;
-            try
-            {
-                object MapAtribArgLocal(object obj) => MapAtribArg(obj, log);
-                obj = Activator.CreateInstance(actualType, attribute.ConstructorArguments.Select(a => a.Value).Select(MapAtribArgLocal).ToArray());
-            } catch(Exception e)
-            {
-                log.Error(e.ToString());
-                foreach(CAArgument ca in attribute.ConstructorArguments)
-                {
-                    log.Message(ca.Value.GetType().FullName);
-                }
-            }
+        //private static Object? Decode(this CustomAttribute attribute, Type actualType, ILogProvider log)
+        //{
+        //    Object obj = null;
+        //    try
+        //    {
+        //        object MapAtribArgLocal(object obj) => MapAtribArg(obj, log);
+        //        obj = Activator.CreateInstance(actualType, attribute.ConstructorArguments.Select(a => a.Value).Select(MapAtribArgLocal).ToArray());
+        //    } catch(Exception e)
+        //    {
+        //        log.Error($"Error constructing patcher from attribute:\n{e}");
+        //    }
 
-            foreach(CANamedArgument? namedArg in attribute.NamedArguments)
-            {
-                var type = Type.GetType(namedArg.Type.AssemblyQualifiedName);
-                if(type is null) return null;
-                if(namedArg.IsField)
-                {
-                    FieldInfo? fld = actualType.GetFieldOfType(namedArg.Name, type);
-                    if(fld is null) return null;
-                    fld.SetValue(obj, namedArg.Value);
-                } else if(namedArg.IsProperty)
-                {
-                    PropertyInfo? prop = actualType.GetPropertyOfType(namedArg.Name, type, true);
-                    if(prop is null) return null;
-                    prop.SetMethod!.Invoke(obj, new[] { namedArg.Value });
-                }
-            }
-            return obj;
-        }
+        //    foreach(CANamedArgument? namedArg in attribute.NamedArguments)
+        //    {
+        //        var type = Type.GetType(namedArg.Type.AssemblyQualifiedName);
+        //        if(type is null) return null;
+        //        if(namedArg.IsField)
+        //        {
+        //            FieldInfo? fld = actualType.GetFieldOfType(namedArg.Name, type);
+        //            if(fld is null) return null;
+        //            fld.SetValue(obj, namedArg.Value);
+        //        } else if(namedArg.IsProperty)
+        //        {
+        //            PropertyInfo? prop = actualType.GetPropertyOfType(namedArg.Name, type, true);
+        //            if(prop is null) return null;
+        //            prop.SetMethod!.Invoke(obj, new[] { namedArg.Value });
+        //        }
+        //    }
+        //    return obj;
+        //}
 
         private static Patch? GetPatchSet(this BaseAttribute? atrib, ILogProvider logger)
         {
@@ -190,6 +184,6 @@
             }
         }
 
-        private static object MapAtribArg(object obj, ILogProvider log) => obj is ClassSig sig ? sig.AssemblyQualifiedName : obj;
+        //private static object MapAtribArg(object obj, ILogProvider log) => obj is ClassSig sig ? sig.AssemblyQualifiedName : obj;
     }
 }

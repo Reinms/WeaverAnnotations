@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<LangVersion>Preview</LangVersion>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>C:\Users\reinm\source\repos\WeaverAnnotations\__BUILD\netcoreapp3.1\Extensions\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeaverAnnotations.Attributes.Unity\WeaverAnnotations.Attributes.Unity.csproj" />
+    <ProjectReference Include="..\WeaverAnnotations.Attributes\WeaverAnnotations.Attributes.csproj" />
+    <ProjectReference Include="..\WeaverAnnotations.Core\WeaverAnnotations.Core.csproj" />
+    <ProjectReference Include="..\WeaverAnnotations.Util\WeaverAnnotations.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\ReinRoR2Modding\libs\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\ReinRoR2Modding\libs\Unity\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

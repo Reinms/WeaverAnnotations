@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 using Stuff;
 
@@ -11,7 +12,12 @@ namespace Stuff
     [Promote]
     internal static class Module
     {
-        static Module() => Console.WriteLine("Module");
+        static Module()
+        {
+            var asm = Assembly.GetCallingAssembly();
+            Console.WriteLine(asm.FullName);
+            Console.WriteLine("Module");
+        }
 
         public static Int32 someValue = 56;
         public static Int32 someProp => someValue;
