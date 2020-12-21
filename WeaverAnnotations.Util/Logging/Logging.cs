@@ -56,7 +56,7 @@
 
 
         private static Single ToFrac(this Byte value) => value / (Single)Byte.MaxValue;
-        private static Single Magnitude(this (Single x, Single y, Single z) vec) => MathF.Sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+        private static Single Magnitude(this (Single x, Single y, Single z) vec) => (Single)Math.Sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
         private static (Single x, Single y, Single z) Normalize(this (Single x, Single y, Single z) vec)
         {
             Single mag = vec.Magnitude();

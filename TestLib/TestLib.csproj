@@ -3,8 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Test</RootNamespace>
-    <AssemblyVersion>1.0.0.45</AssemblyVersion>
-    <FileVersion>1.0.0.45</FileVersion>
+    <AssemblyVersion>1.0.0.235</AssemblyVersion>
+    <FileVersion>1.0.0.235</FileVersion>
+	<LangVersion>Preview</LangVersion>
+	<EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -12,14 +14,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeaverAnnotations.Attributes\WeaverAnnotations.Attributes.csproj">
+    <ProjectReference Include="..\WeaverAnnotations.Attributes\WeaverAnnotations.Attributes.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true">
       <Private>false</Private>
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </ProjectReference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)__BUILD\netcoreapp3.1\WeaverAnnotations.Patcher.exe&quot; &quot;$(TargetPath)&quot;" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="&quot;$(SolutionDir)__BUILD\netcoreapp3.1\WeaverAnnotations.Patcher.exe&quot; &quot;$(TargetPath)&quot;" />
+	</Target>
 
 </Project>

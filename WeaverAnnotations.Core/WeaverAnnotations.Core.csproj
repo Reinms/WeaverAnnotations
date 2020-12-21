@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<Nullable>enable</Nullable>
 	<LangVersion>Preview</LangVersion>
-	<AssemblyVersion>1.0.0.29</AssemblyVersion>
-	<FileVersion>1.0.0.29</FileVersion>
+	<AssemblyVersion>1.0.0.221</AssemblyVersion>
+	<FileVersion>1.0.0.221</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

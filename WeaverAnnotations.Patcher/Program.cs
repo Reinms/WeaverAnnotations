@@ -34,12 +34,12 @@
                 Console.WriteLine("No file found");
                 return;
             }
-
+            ModuleContext ctx = ModuleDef.CreateModuleContext();
             AssemblyDef? asm;
             try
             {
                 Byte[]? b = File.ReadAllBytes(file.FullName);
-                asm = AssemblyDef.Load(b);
+                asm = AssemblyDef.Load(b, ctx);
             } catch
             {
                 Console.WriteLine("Error loading assembly");
@@ -65,7 +65,7 @@
             }
 
 
-            if(PatchEntry.PatchAssembly(asm, new Logger()))
+            if(PatchEntry.PatchAssembly(asm, ctx, new Logger()))
             {
                 Console.WriteLine("Patch success, saving");
                 var opt = new ModuleWriterOptions(asm.ManifestModule);

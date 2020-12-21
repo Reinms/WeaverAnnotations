@@ -5,7 +5,7 @@
 
     public static partial class StringXtn
     {
-        public static Boolean IsNullOrWhiteSpace([NotNullWhen(false)] this String? self) => String.IsNullOrWhiteSpace(self);
-        public static Boolean IsNullOrEmpty([NotNullWhen(false)] this String? self) => String.IsNullOrEmpty(self);
+        public static Boolean IsNullOrWhiteSpace(this String? self) => String.IsNullOrWhiteSpace(self);
+        public static Boolean IsNullOrEmpty(this String? self) => String.IsNullOrEmpty(self);
     }
 }

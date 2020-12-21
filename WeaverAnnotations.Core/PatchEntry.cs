@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
 
@@ -38,15 +39,39 @@
 
         private static readonly Dictionary<Type, Type> patcherMap = new();
 
-        public static Boolean PatchAssembly(AssemblyDef assembly, ILogProvider log)
+        public static Boolean PatchAssembly(AssemblyDef assembly, ModuleContext ctx, ILogProvider log)
         {
+            foreach(var s in assembly.DecodeCustomAttributes<AdditionalPatcherAssemblyAttribute>(log).SelectMany(a => a.paths))
+            {
+                Assembly.LoadFrom(s);
+            }
+
             Init(log);
+
+            var helper = new ResolveHelper(log);
+            var paths = assembly.DecodeCustomAttributes<Attributes.__GENERATOR.AssemblyDataLocationAttribute>(log);
+            foreach(var p in paths)
+            {
+                foreach(var path in p.paths)
+                {
+                    try
+                    {
+                        var module = AssemblyDef.Load(File.ReadAllBytes(path), ctx);
+                        helper.AddAssembly(module);
+                        //log.Message($"Loaded module: {module.FullName}");
+                    } catch(Exception e)
+                    {
+                        //log.Error($"Error loading assembly at {path}. Error: {e.ToString()}");
+                    }
+                }
+            }
+
             BaseAttribute? ToAtribLocal(CustomAttribute? atrib)
             {
                 BaseAttribute? res = atrib.ToAtrib(log);
                 return res;
             }
-            Patch? GetPatchSetLocal(BaseAttribute? atrib) => atrib.GetPatchSet(log);
+            Patch? GetPatchSetLocal(BaseAttribute? atrib) => atrib.GetPatchSet(ctx, helper, log);
 
             foreach(Patch? patchSet in assembly.CustomAttributes.Select(ToAtribLocal).Where(x => x is not null).Select(GetPatchSetLocal))
             {
@@ -56,6 +81,8 @@
                 {
                     if(pass is null) continue;
                     pass._logger = patchSet.logger;
+                    pass._ctx = ctx;
+                    pass.resHelper = patchSet.resHelper;
                     if(pass is IPreparePass prep) prep.Prepare();
 
                     void PatchType(TypeDef? type)
@@ -133,57 +160,19 @@
             }
         }
 
-        //private static T? Decode<T>(this CustomAttribute attribute, Type actualType, ILogProvider log)
-        //    where T : Attribute
-        //    => typeof(T).IsAssignableFrom(actualType) ? attribute.Decode(actualType, log) as T : null;
-
-        //private static Object? Decode(this CustomAttribute attribute, Type actualType, ILogProvider log)
-        //{
-        //    Object obj = null;
-        //    try
-        //    {
-        //        object MapAtribArgLocal(object obj) => MapAtribArg(obj, log);
-        //        obj = Activator.CreateInstance(actualType, attribute.ConstructorArguments.Select(a => a.Value).Select(MapAtribArgLocal).ToArray());
-        //    } catch(Exception e)
-        //    {
-        //        log.Error($"Error constructing patcher from attribute:\n{e}");
-        //    }
-
-        //    foreach(CANamedArgument? namedArg in attribute.NamedArguments)
-        //    {
-        //        var type = Type.GetType(namedArg.Type.AssemblyQualifiedName);
-        //        if(type is null) return null;
-        //        if(namedArg.IsField)
-        //        {
-        //            FieldInfo? fld = actualType.GetFieldOfType(namedArg.Name, type);
-        //            if(fld is null) return null;
-        //            fld.SetValue(obj, namedArg.Value);
-        //        } else if(namedArg.IsProperty)
-        //        {
-        //            PropertyInfo? prop = actualType.GetPropertyOfType(namedArg.Name, type, true);
-        //            if(prop is null) return null;
-        //            prop.SetMethod!.Invoke(obj, new[] { namedArg.Value });
-        //        }
-        //    }
-        //    return obj;
-        //}
-
-        private static Patch? GetPatchSet(this BaseAttribute? atrib, ILogProvider logger)
+        private static Patch? GetPatchSet(this BaseAttribute? atrib, ModuleContext ctx, ResolveHelper resHelp, ILogProvider logger)
         {
             if(atrib is null) return null;
             if(patcherMap.TryGetValue(atrib.GetType(), out Type? patchType))
             {
                 var patch = Activator.CreateInstance(patchType) as Patch;
                 if(patch is null) return null;
-                patch._createdBy = atrib;
-                patch._logger = logger;
+                patch.SetUp(atrib, ctx, resHelp, logger);
                 return patch;
             } else
             {
                 return null;
             }
         }
-
-        //private static object MapAtribArg(object obj, ILogProvider log) => obj is ClassSig sig ? sig.AssemblyQualifiedName : obj;
     }
 }

@@ -6,8 +6,8 @@
 	<Nullable>enable</Nullable>
 	<LangVersion>Preview</LangVersion>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	<AssemblyVersion>1.0.0.27</AssemblyVersion>
-	<FileVersion>1.0.0.27</FileVersion>
+	<AssemblyVersion>1.0.0.217</AssemblyVersion>
+	<FileVersion>1.0.0.217</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

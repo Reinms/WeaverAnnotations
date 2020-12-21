@@ -25,8 +25,8 @@ namespace WeaverAnnotations.DefaultPatchTypes
             public Boolean ShouldPatch(MethodDef target) => true;
             public void ApplyPatch(MethodDef target)
             {
-                target.Body.OptimizeBranches();
-                target.Body.OptimizeMacros();
+                target.Body?.OptimizeBranches();
+                target.Body?.OptimizeMacros();
             }
         }
     }
