@@ -3,14 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Reflection.Metadata.Ecma335;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices.WindowsRuntime;
-    using System.Runtime.Serialization;
-    using System.Security;
 
     using dnlib.DotNet;
 
@@ -39,7 +33,7 @@
 
         private static Object? Decode(this CustomAttribute attribute, Type actualType, ILogProvider? log = null)
         {
-            Object obj = null;
+            Object? obj = null;
             var args = MapCustomAtribArgs(attribute.ConstructorArguments, log);
             try
             {          
@@ -88,6 +82,7 @@
                     TypeSig t when arg.Value is null => null,
                     TypeSig t when t.ReflectionFullName == arg.Value.GetType().FullName => arg.Value,
                     TypeSig t when reflType is Type type && type.IsEnum => Enum.Parse(type, arg.Value?.ToString()!),
+                    TypeSig t when reflType is Type type && type.AssemblyQualifiedName is String aqn && Type.GetType(aqn) is Type typ => typ,
                     TypeSig t when t.ReflectionFullName == typeof(Type).FullName => new _FakeType((TypeSig)arg.Value),
                     _ => throw new NotImplementedException($"Unhandled type: {arg.Type.FullName}"),
                 };
@@ -95,39 +90,6 @@
 
             return args.Select(MapArg).ToArray();
         }
-
-
-        //private static object? MapAtribArg(CAArgument arg, ILogProvider? log = null)
-        //{
-        //    object LocalMap(CAArgument arg) => MapAtribArg(arg, log);
-        //    var reflType = Type.GetType(arg.Type.AssemblyQualifiedName);
-
-        //    try
-        //    {
-        //        return arg.Type switch
-        //        {
-        //            //TypeSig t when t.ReflectionFullName == typeof(Object[]).FullName && arg.Value is List<CAArgument> list => list.Select(LocalMap).ToArray(),
-        //            //TypeSig t when t.ReflectionFullName == typeof(String).FullName && arg.Value is UTF8String str => (String)str,
-        //            //TypeSig t when t.ReflectionFullName == typeof(String).FullName => "",
-        //            //TypeSig t when t.ReflectionFullName == typeof(String[]).FullName && arg.Value is List<CAArgument> list => list.Select(a => (String)(a.Value as UTF8String)).ToArray(),
-        //            //TypeSig t when arg.Value is null && t.IsValueType && reflType is Type type => Activator.CreateInstance(type)!,
-        //            //TypeSig t when arg.Value is null => null,
-        //            //TypeSig t when t.ReflectionFullName == arg.Value.GetType().FullName => arg.Value,
-        //            TypeSig t when reflType is Type type && type.IsEnum => Enum.Parse(type, arg.Value?.ToString()!),
-        //            TypeSig t when t.ReflectionFullName == typeof(Type).FullName => new _FakeType((TypeSig)arg.Value),
-        //            //TypeSig t when t.ReflectionFullName == typeof(Type[]).FullName && arg.Value is List<CAArgument> list => list.Select(a => new _FakeType((TypeSig)arg.Value)).ToArray(),
-        //            _ => throw new NotImplementedException(),
-        //        };
-        //    } catch(NotImplementedException ex)
-        //    {
-        //        log?.Warning($"Unhandled type: {arg.Type.ReflectionFullName}");
-        //    } catch(Exception ex)
-        //    {
-        //        log?.Error($"Error converting type, error: {ex}");
-        //    }
-
-        //    return arg.Value;
-        //}
     }
 
     public sealed class _FakeType : System.Type
