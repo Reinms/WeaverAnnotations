@@ -41,6 +41,10 @@
         protected Boolean TryResolveMethod<T>(T type, String name, MethodSig sig, out MethodDef def)
             where T : IType
             => this.resHelper.TryResolveMethod(type, name, sig, out def);
+
+        protected Boolean TryResolveDelegateSigToMethodSig(TypeSig type, Boolean isInstance, out MethodSig sig, CallingConvention? callConv = null)
+            => this.resHelper.TryResolveDelegateSigToMethodSig(type, isInstance, out sig, callConv);
+
     }
 
     public abstract class Pass<T> : Pass

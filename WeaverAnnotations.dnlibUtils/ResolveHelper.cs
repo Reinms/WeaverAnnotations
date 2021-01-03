@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -25,6 +26,84 @@
             where T : IType 
             => this.Candidates(type).FindMethod(name, sig, out def);
 
+        public Boolean TryResolveDelegateSigToMethodSig(TypeSig sig, Boolean isInstance, out MethodSig methodSig, CallingConvention? overrideCallingConvention = null)
+        {
+            methodSig = default;
+
+            if(sig.IsGenericInstanceType)
+            {
+                var genSig = sig as GenericInstSig;
+                var genArgs = genSig?.GenericArguments;
+
+                if(!TryResolveType(genSig.GenericType, out var typeDef) || !typeDef.IsDelegate)
+                {
+                    this.logger.Error("Unable to find generic delegate typedef");
+                    return false;
+                }
+
+                TypeSig MapGenerics(TypeSig input)
+                {
+                    
+                    TypeSig res = null;
+                    if(!input.IsGenericParameter)
+                    {
+                        res = input;
+                    } else if(input.IsGenericTypeParameter)
+                    {
+                        var gtParam = input.ToGenericVar();
+                        res = genArgs?[(Int32)gtParam.Number]!;
+                    }
+                    logger.Message($"Mapping {input.FullName} to {res.FullName}");
+                    return res;
+
+                }
+
+                var method = typeDef.FindMethod("Invoke");
+                var foundSig = method.MethodSig;
+                var args = foundSig.Params.Skip(0).Select(MapGenerics).ToArray();
+                var retType = MapGenerics(foundSig.RetType);
+
+                if(isInstance)
+                {
+                    methodSig = MethodSig.CreateInstance(retType, args);
+                    if(overrideCallingConvention is CallingConvention cconv) methodSig.CallingConvention = cconv;
+                    return true;
+                } else
+                {
+                    methodSig = MethodSig.CreateStatic(retType, args);
+                    if(overrideCallingConvention is CallingConvention cconv) methodSig.CallingConvention = cconv;
+                    return true;
+                }
+            } else
+            {
+                if(!TryResolveType(sig, out var typeDef) || !typeDef.IsDelegate)
+                {
+
+                    this.logger.Error("Unable to find delegate typedef");
+                    this.logger.Error($"type: {sig?.GetType()?.FullName}");
+                    this.logger.Error($"type: {sig?.FullName}");
+                    return false;
+                }
+
+                var method = typeDef.FindMethod("Invoke");
+                var foundSig = method.MethodSig;
+                var args = foundSig.Params.Skip(0);
+                var retType = foundSig.RetType;
+                
+                if(isInstance)
+                {
+                    methodSig = MethodSig.CreateInstance(retType, args.ToArray());
+                    if(overrideCallingConvention is CallingConvention cconv) methodSig.CallingConvention = cconv;
+                    return true;
+                } else
+                {
+                    methodSig = MethodSig.CreateStatic(retType, args.ToArray());
+                    if(overrideCallingConvention is CallingConvention cconv) methodSig.CallingConvention = cconv;
+                    return true;
+                }
+            }
+        }
+
         private readonly List<AssemblyDef> assemblies = new();
         private readonly ILogProvider logger;
         private IEnumerable<AssemblyDef> Filter(IAssembly definedIn)
@@ -33,6 +112,7 @@
             where T : IType => type switch
         {
             TypeDef td => Enumerable.Repeat<TypeDef>(td, 1),
+            GenericInstSig gis => Candidates(gis.GenericType),
             TypeSig s when s.TryGetTypeDef() is TypeDef td => Enumerable.Repeat<TypeDef>(td, 1),
             _ => this.Filter(type.DefinitionAssembly).FindTypes(type.FullName),
         };

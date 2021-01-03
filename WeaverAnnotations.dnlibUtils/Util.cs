@@ -11,6 +11,7 @@
     using WeaverAnnotations.Util.Logging;
     using WeaverAnnotations.Util.Reflection;
 
+
     public static class Util
     {
         public static TypeSig? GetSig(this Type t) => (t as _FakeType)?.typeSig;
@@ -82,7 +83,7 @@
                     TypeSig t when arg.Value is null => null,
                     TypeSig t when t.ReflectionFullName == arg.Value.GetType().FullName => arg.Value,
                     TypeSig t when reflType is Type type && type.IsEnum => Enum.Parse(type, arg.Value?.ToString()!),
-                    TypeSig t when reflType is Type type && type.AssemblyQualifiedName is String aqn && Type.GetType(aqn) is Type typ => typ,
+                    //TypeSig t when reflType is Type type && type.AssemblyQualifiedName is String aqn && Type.GetType(aqn) is Type typ => typ,
                     TypeSig t when t.ReflectionFullName == typeof(Type).FullName => new _FakeType((TypeSig)arg.Value),
                     _ => throw new NotImplementedException($"Unhandled type: {arg.Type.FullName}"),
                 };

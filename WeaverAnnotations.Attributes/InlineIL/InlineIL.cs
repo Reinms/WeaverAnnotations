@@ -200,6 +200,7 @@
             /// </item>
             /// </list>
             /// </summary>
+            [Obsolete("Not implemented")]
             Break,
             /// <summary>
             /// <list type="table">
@@ -233,14 +234,14 @@
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/> return type, <see cref="Type"/>[] arg types, ?[<see cref="CallConv"/>] calling convention, ?[<see cref="bool"/> tailcall])</description></item>
+            /// <item><description>(<see cref="Type"/> delegate type signature, ?[<see cref="bool"/> tailcall], ?[<see cref="CallConv"/>] calling convention)</description></item>
             /// </list>
             /// </summary>
             Calli,
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="string"/> bound method token, ?[<see cref="Type"/> constrained to], ?[<see cref="bool"/> tailcall])</description></item>
+            /// <item><description>(<see cref="string"/> bound method token, ?[<see cref="bool"/> tailcall], ?[<see cref="Type"/> constrained to])</description></item>
             /// </list>
             /// </summary>
             Callvirt,
@@ -282,14 +283,14 @@
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="ConvType"/>, ?[<see cref="OvfMode"/>])</description></item>
+            /// <item><description>(<see cref="ConvType"/>)</description></item>
             /// </list>
             /// </summary>
             Conv,
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>()</description></item>
             /// </list>
             /// </summary>
             Cpblk,
@@ -320,6 +321,7 @@
             /// <item><description>(<see cref="void"/>)</description></item>
             /// </list>
             /// </summary>
+            [Obsolete("Not implemented")]
             Endfilter,
             /// <summary>
             /// <list type="table">
@@ -327,11 +329,12 @@
             /// <item><description>(<see cref="void"/>)</description></item>
             /// </list>
             /// </summary>
+            [Obsolete("Not implemented")]
             Endfinally,
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>()</description></item>
             /// </list>
             /// </summary>
             Initblk,
@@ -393,19 +396,19 @@
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/> element type)</description></item>
+            /// <item><description>(?[<see cref="Type"/> element type])</description></item>
             /// </list>
             /// </summary>
             Ldelem,
             /// <summary>
             /// <list type="table"><listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/> element type, ?[<see cref="bool"/> readonly])</description></item>
+            /// <item><description>(<see cref="Type"/> element type)</description></item>
             /// </list>
             /// </summary>
             Ldelema,
             /// <summary>
             /// <list type="table"><listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="string"/> bound field token, ?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>(<see cref="string"/> bound field token)</description></item>
             /// </list>
             /// </summary>
             Ldfld,
@@ -463,7 +466,7 @@
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="string"/> bound field token, ?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>(<see cref="string"/> bound field token)</description></item>
             /// </list>
             /// </summary>
             Ldsfld,
@@ -527,7 +530,7 @@
             Newarr,
             /// <summary>
             /// <list type="table"><listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/>[] constructor argument types)</description></item>
+            /// <item><description>(<see cref="Type"/> type to construct, ?[<see cref="Type"/> constructor signature delegate])</description></item>
             /// </list>
             /// </summary>
             Newobj,
@@ -611,15 +614,8 @@
             /// </summary>
             Starg,
             /// <summary>
-            /// <list type="table">
-            /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/> element type)</description></item>
-            /// </list>
-            /// </summary>
-            Stelem,
-            /// <summary>
             /// <list type="table"><listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="string"/> bound field token, ?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>(<see cref="string"/> bound field token)</description></item>
             /// </list>
             /// </summary>
             Stfld,
@@ -633,7 +629,7 @@
             /// <summary>
             /// <list type="table">
             /// <listheader><description>Overloads:</description></listheader>
-            /// <item><description>(<see cref="Type"/>, ?[<see cref="AccessMode"/>])</description></item>
+            /// <item><description>(<see cref="Type"/>)</description></item>
             /// </list>
             /// </summary>
             Stobj,
@@ -702,20 +698,67 @@
 
         public enum CallConv
         {
-
+            Default = 0,
+            C = 1,
+            StdCall = 2,
+            FastCall = 4,
+            Property = 8,
+            Generic = 16,
+            HasThis = 32,
+            ExplicitThis = 64,
+            ReservedByCLR = 128,
+            Field = StdCall | FastCall,
+            GenericInst = StdCall | Property,
+            ThisCall = C | StdCall,
+            Unmanaged = C | Property,
+            VarArg = C | FastCall,
         }
 
         public enum ConvType
         {
-
+            I1,
+            I2,
+            I4,
+            I8,
+            Ovf_I,
+            Ovf_I_Un,
+            Ovf_I1,
+            Ovf_I1_Un,
+            Ovf_I2,
+            Ovf_I2_Un,
+            Ovf_I4,
+            Ovf_I4_Un,
+            Ovf_I8,
+            Ovf_I8_Un,
+            Ovf_U,
+            Ovf_U_Un,
+            Ovf_U1,
+            Ovf_U1_Un,
+            Ovf_U2,
+            Ovf_U2_Un,
+            Ovf_U4,
+            Ovf_U4_Un,
+            Ovf_U8,
+            Ovf_U8_Un,
+            R_Un,
+            R4,
+            R8,
+            U,
+            U1,
+            U2,
+            U4,
+            U8
         }
 
+        [Obsolete("Not Implemented")]
         [Flags]
         public enum AccessMode
         {
             Normal = 0,
-            Unaligned = 1,
-            Volatile = 2,
+            Volatile = 1,
+            Unaligned1b = 2,
+            Unaligned2b = 4,
+            Unaligned
         }
     }
 }

@@ -21,7 +21,7 @@ namespace TestApp
         }
 
         [ILBody(ILBodyAttribute.Mode.Attribute)]
-        [ILBindMethod("Console.WriteLine", typeof(Console), nameof(Console.WriteLine), typeof(void), typeof(object))]
+        [ILBindMethod("Console.WriteLine", typeof(Console), nameof(Console.WriteLine), false, typeof(Action<String>))]
         [ILInstructions(
             Op.Ldarg, "input",
             Op.Isinst, typeof(String),
@@ -31,6 +31,8 @@ namespace TestApp
             Op.Ret,
             "::notstring",
             Op.Pop,
+            Op.Ldc, "Not string",
+            Op.Call, "Console.WriteLine",
             Op.Ret
         )]
         private static extern void PrintIfString(object input);
