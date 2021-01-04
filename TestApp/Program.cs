@@ -14,10 +14,11 @@ namespace TestApp
     {
         private static void Main(String[] args)
         {
-            object a = 54;
-            object b = "Hello World!";
-            PrintIfString(a);
-            PrintIfString(b);
+            var t = typeof(Tests);
+            foreach(var m in t.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public))
+            {
+
+            }
         }
 
         [ILBody(ILBodyAttribute.Mode.Attribute)]
@@ -40,5 +41,13 @@ namespace TestApp
 
 
 
+    }
+
+    internal static partial class Tests
+    {
+        public static void TestCalli()
+        {
+
+        }
     }
 }

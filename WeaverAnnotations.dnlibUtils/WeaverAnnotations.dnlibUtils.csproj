@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	  <LangVersion>Preview</LangVersion>
 	  <Nullable>enable</Nullable>
-	  <AssemblyVersion>1.0.0.226</AssemblyVersion>
-	  <FileVersion>1.0.0.226</FileVersion>
+	  <AssemblyVersion>1.0.0.230</AssemblyVersion>
+	  <FileVersion>1.0.0.230</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

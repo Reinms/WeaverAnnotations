@@ -4,8 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	<Nullable>enable</Nullable>
 	<LangVersion>Preview</LangVersion>
-	<AssemblyVersion>1.0.0.283</AssemblyVersion>
-	<FileVersion>1.0.0.283</FileVersion>
+	<AssemblyVersion>1.0.0.287</AssemblyVersion>
+	<FileVersion>1.0.0.287</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

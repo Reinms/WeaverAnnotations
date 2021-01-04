@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
 
     using dnlib.DotNet;
     using dnlib.DotNet.Writer;
@@ -100,6 +101,11 @@
             {
                 LoadAssemblies(d);
             }
+        }
+
+        public static void DoStuff()
+        {
+            Unsafe.As<object>(56);
         }
     }
 

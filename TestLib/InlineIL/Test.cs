@@ -4,37 +4,78 @@ using System.Collections;
 using System.Collections.Generic;
 
 using WeaverAnnotations.Attributes;
+using WeaverAnnotations.Attributes.InlineIL;
 
 using obj = System.Object;
 
 [assembly: InlineIL]
 namespace Test.InlineIL
 {
-    using System;
-
-    using WeaverAnnotations.Attributes.InlineIL;
-
-    public partial class Test
+    public static partial class ILArith
     {
-        //[ILBody(ILBodyAttribute.Mode.Attribute)]
-        //[ILLocal("mylocal1", typeof(int))]
-        //[ILLocal("mylocal2", typeof(float))]
-        //[ILLocal("mylocal3", typeof(int))]
-        //[ILLocals(
-        //    "NewLocal1", typeof(int),
-        //    "NewLocal2", typeof(uint),
-        //    new obj[] { "NewerLocal1", typeof(string), }
-        //)]
-        //[ILBindField("Asdf", typeof(IDKMAN), nameof(IDKMAN.test))]
-        //[ILInstructions(
-        //    Op.Ldarg, "input",
-        //    Op.Ret
-        //)]
-        //public unsafe extern ref T MyMethod3<T>(void* input);
-    }
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Add,
+            Op.Ret
+        )]
+        public static extern int Add(int l, int r);
 
-    public struct IDKMAN
-    {
-        public int test;
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.And,
+            Op.Ret
+        )]
+        public static extern int And(int l, int r);
+
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Sub,
+            Op.Ret
+        )]
+        public static extern int Sub(int l, int r);
+
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Mul,
+            Op.Ret
+        )]
+        public static extern int Mul(int l, int r);
+
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Xor,
+            Op.Ret
+        )]
+        public static extern int Xor(int l, int r);
+
+
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Div,
+            Op.Ret
+        )]
+        public static extern int Div(int l, int r);
+
+
+        [ILBody(ILBodyAttribute.Mode.Attribute)]
+        [ILInstructions(
+            Op.Ldarg, "l",
+            Op.Ldarg, "r",
+            Op.Or,
+            Op.Ret
+        )]
+        public static extern int Or(int l, int r);
     }
 }
